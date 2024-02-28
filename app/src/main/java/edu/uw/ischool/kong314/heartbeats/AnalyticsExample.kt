@@ -21,4 +21,3 @@ fun getDatabase(): MongoDatabase {
     val client = MongoClient.create(connectionString = System.getenv("MONGO_URI")!!)
     return client.getDatabase(databaseName = "sample_training")
 }
-
