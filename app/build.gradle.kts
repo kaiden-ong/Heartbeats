@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.4")
     implementation("io.github.cdimascio:java-dotenv:5.2.2")
     implementation("org.mongodb:bson-kotlinx:4.11.0")
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.11.0")
