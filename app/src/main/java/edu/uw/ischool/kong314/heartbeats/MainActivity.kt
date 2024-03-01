@@ -11,6 +11,7 @@ class MainActivity : AppCompatActivity() {
     val postFragment = PostFragment()
     val dailyFragment = DailyFragment()
     val leaderboardFragment = LeaderboardFragment()
+    val friendsFragment = FriendsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.map -> {
-                    supportFragmentManager.beginTransaction().replace(R.id.container,mapFragment).commit()
+                    supportFragmentManager.beginTransaction().replace(R.id.container,friendsFragment).commit()
                     return@setOnItemSelectedListener true
                 }
                 R.id.post -> {
