@@ -54,7 +54,7 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/akaya_telivigala"
+        android:fontFamily="@font/kadwa"
         android:text="Heartbeats"
         android:textAlignment="center"
         android:textColor="#000000"

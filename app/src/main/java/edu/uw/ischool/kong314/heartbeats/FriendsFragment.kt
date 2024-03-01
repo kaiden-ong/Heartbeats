@@ -51,8 +51,5 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
             row.addView(username)
             container.addView(row)
         }
-
-
     }
-
 }

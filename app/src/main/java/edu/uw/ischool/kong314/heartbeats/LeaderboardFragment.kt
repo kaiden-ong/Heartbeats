@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TableRow
 import android.widget.TextView
@@ -82,5 +83,11 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
             container.addView(row)
         }
 
+        val friendBtn = view.findViewById<ImageView>(R.id.imageView)
+
+        friendBtn.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, FriendsFragment()).commit()
+        }
     }
 }
