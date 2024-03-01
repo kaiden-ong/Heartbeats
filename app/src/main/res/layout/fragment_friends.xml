@@ -21,13 +21,18 @@
         android:layout_marginStart="230dp"
         android:layout_marginEnd="45dp"/>
 
-    <TableLayout
-        android:id="@+id/friendsContainer"
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="150dp"
-        android:padding="10dp"
-        android:background="@drawable/leaderboard_background"
-        android:orientation="vertical" />
+        android:orientation="vertical"
+        android:background="@drawable/leaderboard_background">
+        <TableLayout
+            android:id="@+id/friendsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:padding="10dp" />
+    </ScrollView>
 
 </FrameLayout>

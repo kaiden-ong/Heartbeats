@@ -30,7 +30,11 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
             friendData("https://example.com/img7.jpg", "Friend 7"),
             friendData("https://example.com/img8.jpg", "Friend 8"),
             friendData("https://example.com/img9.jpg", "Friend 9"),
-            friendData("https://example.com/img10.jpg", "Friend 10")
+            friendData("https://example.com/img10.jpg", "Friend 10"),
+            friendData("https://example.com/img10.jpg", "Friend 11"),
+            friendData("https://example.com/img10.jpg", "Friend 12"),
+            friendData("https://example.com/img10.jpg", "Friend 13"),
+            friendData("https://example.com/img10.jpg", "Friend 14")
         )
 
         val container = view.findViewById<TableLayout>(R.id.friendsContainer)

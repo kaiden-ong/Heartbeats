@@ -14,10 +14,10 @@
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.116" />
+        app:layout_constraintVertical_bias="0.093" />
 
     <EditText
         android:layout_width="match_parent"
@@ -26,29 +26,30 @@
         android:layout_marginEnd="35dp"
         android:hint="Search"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@id/leaderboard_container"
-        app:layout_constraintEnd_toEndOf="@+id/leaderboard_container"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@id/scrollcontainer"
+        app:layout_constraintEnd_toEndOf="@+id/scrollcontainer"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/leaderboardTitle"
         app:layout_constraintVertical_bias="1.0" />
 
-    <TableLayout
-        android:id="@+id/leaderboard_container"
+
+    <ScrollView
+        android:id="@+id/scrollcontainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginVertical="150dp"
+        android:layout_marginVertical="160dp"
         android:layout_marginStart="35dp"
         android:layout_marginEnd="35dp"
         android:background="@drawable/leaderboard_background"
-        android:orientation="vertical"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.73" />
+        android:orientation="vertical">
+        <TableLayout
+            android:id="@+id/leaderboard_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp" />
+    </ScrollView>
 
     <TextView
         android:id="@+id/textView6"
