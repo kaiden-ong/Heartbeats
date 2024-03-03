@@ -61,4 +61,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.028" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPosts"
+        android:layout_width="375dp"
+        android:layout_height="653dp"
+        tools:layout_editor_absoluteX="18dp"
+        tools:layout_editor_absoluteY="79dp" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
