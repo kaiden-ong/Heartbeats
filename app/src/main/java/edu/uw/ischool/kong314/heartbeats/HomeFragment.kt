@@ -13,10 +13,16 @@ class HomeFragment() : Fragment(R.layout.fragment_home)  {
         super.onViewCreated(view, savedInstanceState)
 
         val friendBtn = view.findViewById<ImageView>(R.id.imageView)
+        val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
 
         friendBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.container, FriendsFragment()).commit()
+        }
+
+        profileBtn.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, ProfileFragment()).commit()
         }
     }
 }
