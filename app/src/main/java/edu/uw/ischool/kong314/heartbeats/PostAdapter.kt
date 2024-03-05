@@ -1,16 +1,18 @@
 package edu.uw.ischool.kong314.heartbeats
 
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.imageview.ShapeableImageView
 
-class PostAdapter (
-    var posts:List<Post>
-): RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
-    inner class PostViewHolder(postView: View): RecyclerView.ViewHolder(postView)
+class PostAdapter (private var posts:ArrayList<Post>): RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
+    inner class PostViewHolder(postView: View): RecyclerView.ViewHolder(postView) {
+        val postImage: ImageView = itemView.findViewById(R.id.rvImage)
+        val postText: TextView = itemView.findViewById(R.id.rvTitle)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
@@ -18,10 +20,9 @@ class PostAdapter (
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        holder.itemView.apply {
-            findViewById<TextView>(R.id.tvTitle).text = posts[position].title
-//            findViewById<TextView>(R.id.tvImage). = posts[position].image
-        }
+        val currentItem = posts[position]
+        holder.postImage.setImageResource(currentItem.image)
+        holder.postText.text = currentItem.title
     }
 
     override fun getItemCount(): Int {

@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.map -> {
-                    supportFragmentManager.beginTransaction().replace(R.id.container,friendsFragment).commit()
+                    supportFragmentManager.beginTransaction().replace(R.id.container,mapFragment).commit()
                     return@setOnItemSelectedListener true
                 }
                 R.id.post -> {

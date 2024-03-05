@@ -3,27 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="425dp"
-    android:padding="16dp">
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:paddingHorizontal="16dp">
 
     <ImageView
-        android:id="@+id/tvImage"
-        android:layout_width="match_parent"
+        android:id="@+id/rvImage"
+        android:layout_width="0dp"
         android:layout_height="350dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@id/rvTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:id="@+id/rvTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:text="Title"
-        android:textSize="24sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvImage" />
+        app:layout_constraintTop_toBottomOf="@+id/rvImage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
