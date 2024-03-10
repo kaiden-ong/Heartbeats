@@ -21,6 +21,9 @@ class HomeFragment() : Fragment(R.layout.fragment_home)  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (requireActivity() as MainActivity).setBottomNavigationBarVisibility(View.VISIBLE)
+
+
         // dummy data for now
         imageId = arrayOf(
             R.drawable.logo,
