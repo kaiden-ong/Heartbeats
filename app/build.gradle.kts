@@ -27,6 +27,11 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -34,20 +39,13 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    packaging {
-        resources {
-            excludes += "META-INF/native-image/org.mongodb/bson/native-image.properties"
-        }
-    }
 }
 
 dependencies {
+    implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.4")
-    implementation("io.github.cdimascio:java-dotenv:5.2.2")
-    implementation("org.mongodb:bson-kotlinx:4.11.0")
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3")
     implementation("io.projectreactor:reactor-core:3.6.3")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
