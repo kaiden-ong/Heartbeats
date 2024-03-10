@@ -9,23 +9,22 @@
     <ImageView
         android:id="@+id/signinLogo"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:src="@drawable/logo"
+        android:layout_height="200dp"
+        android:src="@drawable/logo_no_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.519"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintVertical_bias="0.246" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="HeartBeats"
         android:textAlignment="center"
-        android:textSize="36sp"
+        android:textColor="#000000"
+        android:textSize="48sp"
         android:textStyle="bold"
-        android:textColor="#F2555A"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toEndOf="parent"
@@ -36,30 +35,36 @@
         android:id="@+id/loginBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signinLogo"
-        app:layout_constraintVertical_bias="0.65"
-        android:background="@drawable/button_background"
-        app:backgroundTint="#F2555A"
+        android:layout_marginHorizontal="50dp"
         android:text="Login"
         android:textSize="24sp"
-        android:layout_marginHorizontal="50dp"/>
+        app:backgroundTint="#F2555A"
+        app:cornerRadius="15sp"
+        android:paddingVertical="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signinLogo"
+        app:layout_constraintVertical_bias="0.396" />
 
     <Button
         android:id="@+id/signupBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/loginBtn"
-        app:layout_constraintVertical_bias="0.3"
-        android:background="@drawable/button_outline"
+        android:layout_marginHorizontal="50dp"
+        android:backgroundTint="#FFFFFF"
         android:text="Sign Up"
+        android:textColor="#F2555A"
         android:textSize="24sp"
-        android:layout_marginHorizontal="50dp"/>
+        app:cornerRadius="15sp"
+        android:paddingVertical="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loginBtn"
+        app:layout_constraintVertical_bias="0.138"
+        app:strokeColor="#F2555A"
+        app:strokeWidth="4sp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

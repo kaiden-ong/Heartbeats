@@ -8,22 +8,42 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.size
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 
 class ProfileFragment() : Fragment(R.layout.fragment_profile) {
+    private lateinit var auth: FirebaseAuth
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (requireActivity() as MainActivity).setBottomNavigationBarVisibility(View.VISIBLE)
+
+        val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.menu.setGroupCheckable(0, true, false)
+        for (i in 0 until bottomNavigationView.menu.size()) {
+            bottomNavigationView.menu.getItem(i).isChecked = false
+        }
+        bottomNavigationView.menu.setGroupCheckable(0, true, true)
+
+        auth = Firebase.auth
 
         val profilePic = view.findViewById<ImageView>(R.id.profilePic)
         // change image here
         val profileUserText = view.findViewById<TextView>(R.id.profileName)
-        // change username here
+        profileUserText.text = auth.currentUser!!.displayName
+
         val emailUserText = view.findViewById<TextView>(R.id.profileEmail)
+        emailUserText.text =  "Email: " + auth.currentUser!!.email
 
         val pointText = view.findViewById<TextView>(R.id.pointText)
 
         val signoutBtn = view.findViewById<Button>(R.id.signoutBtn)
         signoutBtn.setOnClickListener {
+            FirebaseAuth.getInstance().signOut();
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.container, SigninFragment()).commit()
         }

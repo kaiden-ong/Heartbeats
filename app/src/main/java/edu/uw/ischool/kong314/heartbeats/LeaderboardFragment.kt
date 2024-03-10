@@ -84,10 +84,16 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
         }
 
         val friendBtn = view.findViewById<ImageView>(R.id.imageView)
+        val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
 
         friendBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.container, FriendsFragment()).commit()
+        }
+
+        profileBtn.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, ProfileFragment()).commit()
         }
     }
 }

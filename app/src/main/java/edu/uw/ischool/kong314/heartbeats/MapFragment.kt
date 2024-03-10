@@ -18,10 +18,16 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         val friendBtn = view.findViewById<ImageView>(R.id.imageView)
+        val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
 
         friendBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.container, FriendsFragment()).commit()
+        }
+
+        profileBtn.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, ProfileFragment()).commit()
         }
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment

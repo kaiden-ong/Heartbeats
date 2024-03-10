@@ -21,8 +21,20 @@ class PostFragment() : Fragment(R.layout.fragment_post)  {
         super.onViewCreated(view, savedInstanceState)
 
         val friendBtn = view.findViewById<ImageView>(R.id.imageView)
+        val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
+
         val selectImgBtn = view.findViewById<Button>(R.id.select_image)
         val imageView = view.findViewById<ImageView>(R.id.post_image)
+
+        friendBtn.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, FriendsFragment()).commit()
+        }
+
+        profileBtn.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, ProfileFragment()).commit()
+        }
 
         val title = view.findViewById<EditText>(R.id.title)
         val description = view.findViewById<EditText>(R.id.description)
@@ -57,10 +69,7 @@ class PostFragment() : Fragment(R.layout.fragment_post)  {
             selectImageIntent.launch("image/*")
         }
 
-        friendBtn.setOnClickListener {
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, FriendsFragment()).commit()
-        }
+
 
         postImgBtn.setOnClickListener {
             Toast.makeText(activity, "Title: ${title.getText().toString()} and Description: ${description.getText().toString()}", Toast.LENGTH_LONG).show()
