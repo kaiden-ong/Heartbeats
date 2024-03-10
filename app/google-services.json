@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "399261932697",
+    "project_id": "heartbeats-3a244",
+    "storage_bucket": "heartbeats-3a244.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399261932697:android:c087fdd8aff3bf67a6ac08",
+        "android_client_info": {
+          "package_name": "edu.uw.ischool.kong314.heartbeats"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRvw5lRRXHwtt1qXHhe-Yu_vJr_A-e64s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
