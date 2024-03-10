@@ -6,16 +6,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import kotlinx.coroutines.runBlocking
+import android.util.Log
+
+
+
+
+
 
 class DailyFragment() : Fragment(R.layout.fragment_daily)  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         val friendBtn = view.findViewById<ImageView>(R.id.imageView)
+        val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
 
         friendBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.container, FriendsFragment()).commit()
         }
+
+        profileBtn.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, ProfileFragment()).commit()
+        }
     }
+
+
 }

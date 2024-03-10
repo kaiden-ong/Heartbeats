@@ -18,6 +18,6 @@ fun main() {
 }
 
 fun getDatabase(): MongoDatabase {
-    val client = MongoClient.create(connectionString = System.getenv("MONGO_URI")!!)
+    val client = MongoClient.create(connectionString = "mongodb+srv://kaidenong:Heartbeats2024@heartbeats.bhgpulq.mongodb.net/?retryWrites=true&w=majority&appName=Heartbeats")
     return client.getDatabase(databaseName = "sample_training")
 }
