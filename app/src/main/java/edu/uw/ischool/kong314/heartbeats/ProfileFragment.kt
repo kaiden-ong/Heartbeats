@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.firebase.auth.FirebaseAuth
 
 
 class ProfileFragment() : Fragment(R.layout.fragment_profile) {
@@ -24,6 +25,7 @@ class ProfileFragment() : Fragment(R.layout.fragment_profile) {
 
         val signoutBtn = view.findViewById<Button>(R.id.signoutBtn)
         signoutBtn.setOnClickListener {
+            FirebaseAuth.getInstance().signOut();
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.container, SigninFragment()).commit()
         }
