@@ -19,6 +19,9 @@ interface DatabaseRepository {
     fun setUserPrivacy(user: String, privacyState: Boolean)
     fun getFriends(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getUsernames(callback: (List<String>?, DatabaseError?) -> Unit)
+    fun getPostImages(callback: (List<String>?, DatabaseError?) -> Unit)
+    fun getPostUsers(callback: (List<String>?, DatabaseError?) -> Unit)
+    fun getPostDesc(callback: (List<String>?, DatabaseError?) -> Unit)
 }
 
 class DatabaseRepositoryStorage() : DatabaseRepository {
@@ -121,6 +124,54 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
                 callback(users, null)
             }
 
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, error)
+            }
+        })
+    }
+
+    override fun getPostImages(callback: (List<String>?, DatabaseError?) -> Unit) {
+        val postImgRef = db.getReference("Posts")
+        val imgs = mutableListOf<String>()
+        postImgRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children) {
+                    imgs.add(item.child("image").getValue(String::class.java)!!)
+                }
+                callback(imgs, null)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, error)
+            }
+        })
+    }
+
+    override fun getPostUsers(callback: (List<String>?, DatabaseError?) -> Unit) {
+        val postUsersRef = db.getReference("Posts")
+        val users = mutableListOf<String>()
+        postUsersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children) {
+                    users.add(item.child("by").getValue(String::class.java)!!)
+                }
+                callback(users, null)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, error)
+            }
+        })
+    }
+
+    override fun getPostDesc(callback: (List<String>?, DatabaseError?) -> Unit) {
+        val postDescRef = db.getReference("Posts")
+        val descs = mutableListOf<String>()
+        postDescRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children) {
+                    descs.add(item.child("desc").getValue(String::class.java)!!)
+                }
+                callback(descs, null)
+            }
             override fun onCancelled(error: DatabaseError) {
                 callback(null, error)
             }

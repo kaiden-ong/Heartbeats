@@ -4,5 +4,6 @@ import android.media.Image
 
 data class Post(
     val title: String,
-    var image: Int
+    var image: String,
+    val username: String
 )

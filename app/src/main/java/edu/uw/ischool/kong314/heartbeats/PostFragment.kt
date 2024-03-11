@@ -79,10 +79,10 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.toString().trim().length == 0) {
-                    postImgBtn.setVisibility(View.GONE)
+                if (s.toString().trim().isEmpty()) {
+                    postImgBtn.visibility = View.GONE
                 } else {
-                    postImgBtn.setVisibility(View.VISIBLE)
+                    postImgBtn.visibility = View.VISIBLE
                 }
             }
         }
@@ -97,8 +97,8 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
 
 
         postImgBtn.setOnClickListener {
-            Toast.makeText(activity, "Title: ${title.getText().toString()} and Description: ${description.getText().toString()}", Toast.LENGTH_LONG).show()
-            uploadImageToFirebase(imageUri, title.getText().toString(), description.getText().toString())
+            Toast.makeText(activity, "Title: ${title.text.toString()} and Description: ${description.text.toString()}", Toast.LENGTH_LONG).show()
+            uploadImageToFirebase(imageUri, title.text.toString(), description.text.toString())
         }
     }
     private fun uploadImageToFirebase(uri: Uri?, title: String, desc: String) {
@@ -112,26 +112,24 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
 
             refStorage.putFile(uri)
                 .addOnSuccessListener (
-                    OnSuccessListener<UploadTask.TaskSnapshot> {
+                    OnSuccessListener<UploadTask.TaskSnapshot> { it ->
                         it.storage.downloadUrl.addOnSuccessListener {
                             val imageUrl = it.toString()
                             val database = FirebaseDatabase.getInstance().getReference("Posts")
 
-                            val postId = database.push().getKey()
+                            val postId = database.push().key
 
                             val hashMap = HashMap<String, Any>()
-                            hashMap.put("image", imageUrl)
-                            hashMap.put("title", title)
-                            hashMap.put("desc", desc)
+                            hashMap["image"] = imageUrl
+                            hashMap["title"] = title
+                            hashMap["desc"] = desc
                             Firebase.auth.currentUser?.let { it1 -> hashMap.put("by", it1.uid) }
                             database.child(postId!!).setValue(hashMap)
 
                             progressDialog.dismiss()
                         }
                     }
-                )
-
-                ?.addOnFailureListener(
+                ).addOnFailureListener(
                     OnFailureListener {
                         Log.e("Upload Image", it.message.toString())
                     }

@@ -7,6 +7,18 @@
     android:background="#FFFFFF"
     android:paddingHorizontal="16dp">
 
+    <TextView
+        android:id="@+id/rvUser"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="username"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/rvImage" />
+
     <ImageView
         android:id="@+id/rvImage"
         android:layout_width="0dp"
@@ -15,7 +27,7 @@
         app:layout_constraintBottom_toTopOf="@id/rvTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/rvUser" />
 
     <TextView
         android:id="@+id/rvTitle"
@@ -23,6 +35,7 @@
         android:layout_height="wrap_content"
         android:text="Title"
         android:textSize="16sp"
+        android:paddingBottom="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
