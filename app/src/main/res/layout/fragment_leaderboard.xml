@@ -20,6 +20,7 @@
         app:layout_constraintVertical_bias="0.093" />
 
     <EditText
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="275dp"

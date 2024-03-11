@@ -1,10 +1,14 @@
 package edu.uw.ischool.kong314.heartbeats
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TableRow
@@ -17,25 +21,77 @@ data class rankingEntry(
 )
 
 class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
+    private lateinit var heartbeatsApp: HeartbeatsApp
+    private lateinit var databaseRepo: DatabaseRepository
+    private lateinit var userList: Map<String, Int>
+    private val TAG: String = "LeaderboardFragment"
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val tempLeaderboardData = listOf(
-            rankingEntry(1, "User1", 100),
-            rankingEntry(2, "User2", 90),
-            rankingEntry(3, "User3", 80),
-            rankingEntry(4, "User4", 70),
-            rankingEntry(5, "User5", 60),
-            rankingEntry(6, "User6", 50),
-            rankingEntry(7, "User7", 40),
-            rankingEntry(8, "User8", 30),
-            rankingEntry(9, "User9", 20),
-            rankingEntry(10, "User10", 10)
-        )
+        val rankingList = mutableListOf<rankingEntry>()
 
-        val container = view.findViewById<LinearLayout>(R.id.leaderboard_container)
+        heartbeatsApp = requireActivity().application as HeartbeatsApp
+        databaseRepo = heartbeatsApp.databaseRepository
+        databaseRepo.getUserInfo { users, error ->
+            if (error != null) {
+                Log.e(TAG, "Error retrieving challenges: ${error.message}")
+            } else {
+                if (users != null) {
+                    userList = users
+                } else {
+                    Log.e(TAG, "No challenges found.")
+                }
+                val sortedUsers = userList.entries.sortedByDescending {it.value}.map { it.key}
+                sortedUsers.forEachIndexed { index, user ->
+                    rankingList.add(rankingEntry(index + 1, user, userList.get(user)!!))
+                }
+                setUITable(rankingList)
+            }
+        }
+
+        val searchBar = view.findViewById<EditText>(R.id.search_bar)
+
+        searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val query = s.toString().trim()
+                val filteredUsers = if(query.isNotEmpty()) {
+                    userList.filter { it.key.contains(query, ignoreCase = true)}
+                } else {
+                    userList
+                }
+
+                val newRankingList = mutableListOf<rankingEntry>()
+                val newRankings = filteredUsers.entries.sortedByDescending { it.value }.map {it.key}
+                newRankings.forEachIndexed { index, user ->
+                    newRankingList.add(rankingEntry(index + 1, user, filteredUsers.get(user)!!))
+                }
+                setUITable(newRankingList)
+            }
+        })
 
 
+
+        val friendBtn = view.findViewById<ImageView>(R.id.imageView)
+        val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
+
+        friendBtn.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, FriendsFragment()).commit()
+        }
+
+        profileBtn.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, ProfileFragment()).commit()
+        }
+    }
+
+    private fun setUITable(rankingList: List<rankingEntry>) {
+        val container = view?.findViewById<LinearLayout>(R.id.leaderboard_container)
+
+        container?.removeAllViews()
 
         val titleRow = TableRow(requireContext())
         val rankTitleView = TextView(requireContext())
@@ -56,9 +112,12 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
         val pointsTitleView = TextView(requireContext())
         pointsTitleView.text = "POINTS"
         titleRow.addView(pointsTitleView)
-        container.addView(titleRow)
+        if (container != null) {
+            container.addView(titleRow)
+        }
 
-        tempLeaderboardData.forEach { entry ->
+        Log.i("LeaderboardFragment", rankingList.toString())
+        rankingList.forEach { entry ->
             val row = TableRow(requireContext())
             val rankText = TextView(requireContext())
             rankText.text = entry.rank.toString()
@@ -80,20 +139,9 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
             pointsText.text = entry.points.toString()
             row.addView(pointsText)
 
-            container.addView(row)
-        }
-
-        val friendBtn = view.findViewById<ImageView>(R.id.imageView)
-        val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
-
-        friendBtn.setOnClickListener {
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, FriendsFragment()).commit()
-        }
-
-        profileBtn.setOnClickListener {
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, ProfileFragment()).commit()
+            if (container != null) {
+                container.addView(row)
+            }
         }
     }
 }
