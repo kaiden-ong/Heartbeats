@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
     val postFragment = PostFragment()
     val dailyFragment = DailyFragment()
     val leaderboardFragment = LeaderboardFragment()
-    val friendsFragment = FriendsFragment()
 
     private lateinit var auth: FirebaseAuth;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,31 +36,36 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.home -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, homeFragment).commit()
+                        .replace(R.id.container, homeFragment)
+                        .addToBackStack(null).commit()
                     return@setOnItemSelectedListener true
                 }
 
                 R.id.map -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, mapFragment).commit()
+                        .replace(R.id.container, mapFragment)
+                        .addToBackStack(null).commit()
                     return@setOnItemSelectedListener true
                 }
 
                 R.id.post -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, postFragment).commit()
+                        .replace(R.id.container, postFragment)
+                        .addToBackStack(null).commit()
                     return@setOnItemSelectedListener true
                 }
 
                 R.id.daily -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, dailyFragment).commit()
+                        .replace(R.id.container, dailyFragment)
+                        .addToBackStack(null).commit()
                     return@setOnItemSelectedListener true
                 }
 
                 R.id.leaderboard -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, leaderboardFragment).commit()
+                        .replace(R.id.container, leaderboardFragment)
+                        .addToBackStack(null).commit()
                     return@setOnItemSelectedListener true
                 }
             }

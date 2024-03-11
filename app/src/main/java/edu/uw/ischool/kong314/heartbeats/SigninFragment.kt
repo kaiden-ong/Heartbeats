@@ -18,13 +18,13 @@ class SigninFragment() : Fragment(R.layout.fragment_signin) {
         val signupBtn = view.findViewById<Button>(R.id.signupBtn)
         signupBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, SignupFragment()).commit()
+            transaction.replace(R.id.container, SignupFragment()).addToBackStack(null).commit()
         }
 
         val loginBtn = view.findViewById<Button>(R.id.loginBtn)
         loginBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, LoginFragment()).commit()
+            transaction.replace(R.id.container, LoginFragment()).addToBackStack(null).commit()
         }
     }
 }

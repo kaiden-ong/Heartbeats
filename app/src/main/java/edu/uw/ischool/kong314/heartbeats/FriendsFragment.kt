@@ -44,7 +44,7 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
 
         profileBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, ProfileFragment()).commit()
+            transaction.replace(R.id.container, ProfileFragment()).addToBackStack(null).commit()
         }
 
         heartbeatsApp = requireActivity().application as HeartbeatsApp

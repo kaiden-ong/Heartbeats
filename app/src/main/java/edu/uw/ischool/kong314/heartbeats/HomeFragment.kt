@@ -83,12 +83,12 @@ class HomeFragment() : Fragment(R.layout.fragment_home)  {
 
         friendBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, FriendsFragment()).commit()
+            transaction.replace(R.id.container, FriendsFragment()).addToBackStack(null).commit()
         }
 
         profileBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, ProfileFragment()).commit()
+            transaction.replace(R.id.container, ProfileFragment()).addToBackStack(null).commit()
         }
 
 
