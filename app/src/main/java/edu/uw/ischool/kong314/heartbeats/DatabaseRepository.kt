@@ -22,10 +22,13 @@ interface DatabaseRepository {
     fun getPostImages(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getPostUsers(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getPostDesc(callback: (List<String>?, DatabaseError?) -> Unit)
+
+    fun getUsernamesByUID(callback: (Map<String, String>?, DatabaseError?) -> Unit)
 }
 
 class DatabaseRepositoryStorage() : DatabaseRepository {
     private val db = Firebase.database
+    private val TAG: String = "databaseRepoStorage"
 
     override fun getChallenges(callback: (List<String>?, DatabaseError?) -> Unit) {
         val challengeRef = db.getReference("daily_challenge")
@@ -149,10 +152,23 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
     override fun getPostUsers(callback: (List<String>?, DatabaseError?) -> Unit) {
         val postUsersRef = db.getReference("Posts")
         val users = mutableListOf<String>()
+        lateinit var usersByUID: Map<String, String>
+        this.getUsernamesByUID { users, error ->
+            if (error != null) {
+                Log.e(TAG, "Error retrieving challenges: ${error.message}")
+            } else {
+                if (users != null) {
+                    usersByUID = users
+                } else {
+                    Log.e(TAG, "No challenges found.")
+                }
+            }
+        }
         postUsersRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for(item in snapshot.children) {
-                    users.add(item.child("by").getValue(String::class.java)!!)
+                    val uid = item.child("by").getValue(String::class.java)!!
+                    users.add(usersByUID[uid]!!)
                 }
                 callback(users, null)
             }
@@ -172,6 +188,28 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
                 }
                 callback(descs, null)
             }
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, error)
+            }
+        })
+    }
+
+    override fun getUsernamesByUID(callback: (Map<String, String>?, DatabaseError?) -> Unit) {
+        val userInfoRef = db.getReference("user_info")
+        val userUID = mutableMapOf<String, String>()
+
+        userInfoRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children) {
+                    val currUID = item.key
+                    val username = item.child("username").getValue(String::class.java)
+                    if (username != null) {
+                        userUID[currUID!!] =  username
+                    }
+                }
+                callback(userUID, null)
+            }
+
             override fun onCancelled(error: DatabaseError) {
                 callback(null, error)
             }

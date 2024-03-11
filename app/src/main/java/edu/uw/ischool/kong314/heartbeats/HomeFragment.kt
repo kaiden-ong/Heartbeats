@@ -30,7 +30,7 @@ class HomeFragment() : Fragment(R.layout.fragment_home)  {
         (requireActivity() as MainActivity).setBottomNavigationBarVisibility(View.VISIBLE)
         heartbeatsApp = requireActivity().application as HeartbeatsApp
         databaseRepo = heartbeatsApp.databaseRepository
-        databaseRepo.getPostImages() { imgs, error ->
+        databaseRepo.getPostImages { imgs, error ->
             if (error != null) {
                 Log.e(TAG, "Error retrieving post images: ${error.message}")
             } else {
