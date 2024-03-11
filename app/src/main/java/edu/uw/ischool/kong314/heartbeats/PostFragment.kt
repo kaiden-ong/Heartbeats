@@ -1,9 +1,16 @@
 package edu.uw.ischool.kong314.heartbeats
 
+import android.app.ProgressDialog
+import android.content.ClipDescription
+import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +22,24 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.AndroidViewModel
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.HashMap
+import java.util.Locale
+import java.util.UUID
 
-class PostFragment() : Fragment(R.layout.fragment_post)  {
+class PostFragment() : Fragment(R.layout.fragment_post) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -40,7 +63,9 @@ class PostFragment() : Fragment(R.layout.fragment_post)  {
         val description = view.findViewById<EditText>(R.id.description)
         val postImgBtn = view.findViewById<ImageButton>(R.id.post_button)
 
+        var imageUri : Uri? = null
         val selectImageIntent = registerForActivityResult(ActivityResultContracts.GetContent()) {uri ->
+            imageUri = uri
             imageView.setImageURI(uri)
         }
 
@@ -73,8 +98,45 @@ class PostFragment() : Fragment(R.layout.fragment_post)  {
 
         postImgBtn.setOnClickListener {
             Toast.makeText(activity, "Title: ${title.getText().toString()} and Description: ${description.getText().toString()}", Toast.LENGTH_LONG).show()
+            uploadImageToFirebase(imageUri, title.getText().toString(), description.getText().toString())
         }
     }
+    private fun uploadImageToFirebase(uri: Uri?, title: String, desc: String) {
+        val progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage("Posting")
+        progressDialog.show()
 
+        if (uri != null) {
+            val fileName = UUID.randomUUID().toString() + ".jpg"
+            val refStorage = FirebaseStorage.getInstance().reference.child("images/$fileName")
+
+            refStorage.putFile(uri)
+                .addOnSuccessListener (
+                    OnSuccessListener<UploadTask.TaskSnapshot> {
+                        it.storage.downloadUrl.addOnSuccessListener {
+                            val imageUrl = it.toString()
+                            val database = FirebaseDatabase.getInstance().getReference("Posts")
+
+                            val postId = database.push().getKey()
+
+                            val hashMap = HashMap<String, Any>()
+                            hashMap.put("image", imageUrl)
+                            hashMap.put("title", title)
+                            hashMap.put("desc", desc)
+                            Firebase.auth.currentUser?.let { it1 -> hashMap.put("by", it1.uid) }
+                            database.child(postId!!).setValue(hashMap)
+
+                            progressDialog.dismiss()
+                        }
+                    }
+                )
+
+                ?.addOnFailureListener(
+                    OnFailureListener {
+                        Log.e("Upload Image", it.message.toString())
+                    }
+                )
+        }
+    }
 
 }
