@@ -97,16 +97,25 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
 
 
         postImgBtn.setOnClickListener {
-            Toast.makeText(activity, "Title: ${title.text.toString()} and Description: ${description.text.toString()}", Toast.LENGTH_LONG).show()
             uploadImageToFirebase(imageUri, title.text.toString(), description.text.toString())
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, HomeFragment()).addToBackStack(null).commit()
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        val title = view?.findViewById<EditText>(R.id.title)
+        val description = view?.findViewById<EditText>(R.id.description)
+        title?.setText("")
+        description?.setText("")
+    }
     private fun uploadImageToFirebase(uri: Uri?, title: String, desc: String) {
-        val progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage("Posting")
-        progressDialog.show()
 
         if (uri != null) {
+            val progressDialog = ProgressDialog(activity)
+            progressDialog.setMessage("Posting")
+            progressDialog.show()
             val fileName = UUID.randomUUID().toString() + ".jpg"
             val refStorage = FirebaseStorage.getInstance().reference.child("images/$fileName")
 
@@ -144,6 +153,8 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
 //                            }
 
                             progressDialog.dismiss()
+                            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                            transaction.replace(R.id.container, HomeFragment()).commit()
                         }
                     }
                 ).addOnFailureListener(
@@ -151,6 +162,8 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
                         Log.e("Upload Image", it.message.toString())
                     }
                 )
+        } else {
+            Toast.makeText(activity,"Please select an image", Toast.LENGTH_LONG).show()
         }
     }
 
