@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 
 data class rankingEntry(
     val rank: Int,
@@ -102,6 +103,7 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
         val titleRow = TableRow(requireContext())
         val rankTitleView = TextView(requireContext())
         rankTitleView.text = "RANK"
+        rankTitleView.textSize = 18f
         titleRow.addView(rankTitleView)
 
         val space1 = TextView(requireContext())
@@ -110,23 +112,30 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
 
         val userTitleView = TextView(requireContext())
         userTitleView.text = "USERNAME"
+        userTitleView.textSize = 18f
         titleRow.addView(userTitleView)
         val space2 = TextView(requireContext())
-        space2.text = "                        "
+        space2.text = "      "
         titleRow.addView(space2)
 
         val pointsTitleView = TextView(requireContext())
         pointsTitleView.text = "HEARTBEATS"
+        pointsTitleView.textSize = 18f
         titleRow.addView(pointsTitleView)
-        if (container != null) {
-            container.addView(titleRow)
-        }
+        container?.addView(titleRow)
 
-        Log.i("LeaderboardFragment", rankingList.toString())
+        val divider = View(requireContext())
+        val params = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 4)
+        divider.layoutParams = params
+        val color = ContextCompat.getColor(requireContext(), R.color.black)
+        divider.setBackgroundColor(color)
+        container?.addView(divider)
+
         rankingList.forEach { entry ->
             val row = TableRow(requireContext())
             val rankText = TextView(requireContext())
             rankText.text = entry.rank.toString()
+            rankText.textSize = 18f
             row.addView(rankText)
 
             val space1 = TextView(requireContext())
@@ -135,17 +144,29 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
 
             val userText = TextView(requireContext())
             userText.text = entry.username
+            userText.textSize = 18f
             row.addView(userText)
 
             val space2 = TextView(requireContext())
-            space2.text = "                        "
+            space2.text = "      "
             row.addView(space2)
 
             val pointsText = TextView(requireContext())
             pointsText.text = entry.points.toString()
+            pointsText.textSize = 18f
             row.addView(pointsText)
 
             container?.addView(row)
+
+
+
+
+            val rowSpaceView = View(requireContext())
+            val rowSpaceParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 20
+            )
+            rowSpaceView.layoutParams = rowSpaceParams
+            container?.addView(rowSpaceView)
         }
     }
 }
