@@ -13,11 +13,12 @@ import com.google.firebase.auth.auth
 interface DatabaseRepository {
     fun getChallenges(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getLocations(callback: (Map<String, LatLng>?, DatabaseError?) -> Unit)
-    fun getUserInfo(callback: (Map<String, Int>?, DatabaseError?) -> Unit)
+    fun getUserHeartbeats(callback: (Map<String, Int>?, DatabaseError?) -> Unit)
     fun getUserPrivacy(callback: (Map<String, Boolean>?, DatabaseError?) -> Unit)
 
     fun setUserPrivacy(user: String, privacyState: Boolean)
     fun getFriends(callback: (List<String>?, DatabaseError?) -> Unit)
+    fun getUsernames(callback: (List<String>?, DatabaseError?) -> Unit)
 }
 
 class DatabaseRepositoryStorage() : DatabaseRepository {
@@ -65,7 +66,7 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
         })
     }
 
-    override fun getUserInfo(callback: (Map<String, Int>?, DatabaseError?) -> Unit) {
+    override fun getUserHeartbeats(callback: (Map<String, Int>?, DatabaseError?) -> Unit) {
         val userRef = db.getReference("user_info")
         val users = mutableMapOf<String, Int>()
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -86,7 +87,6 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
         })
     }
 
-
     override fun getUserPrivacy(callback: (Map<String, Boolean>?, DatabaseError?) -> Unit) {
         val userRef = db.getReference("user_info")
         val users = mutableMapOf<String, Boolean>()
@@ -101,6 +101,26 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
                 }
                 callback(users, null)
             }
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, error)
+            }
+        })
+    }
+
+    override fun getUsernames(callback: (List<String>?, DatabaseError?) -> Unit) {
+        val userRef = db.getReference("user_info")
+        val users = mutableListOf<String>()
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children) {
+                    val username = item.child("username").getValue(String::class.java)
+                    if (username != null) {
+                        users.add(username)
+                    }
+                }
+                callback(users, null)
+            }
+
             override fun onCancelled(error: DatabaseError) {
                 callback(null, error)
             }

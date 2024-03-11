@@ -51,6 +51,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:context=".FriendsFragment">
 
         <TextView
@@ -60,26 +61,41 @@
             android:layout_marginTop="70dp"
             android:layout_marginEnd="20dp"
             android:text="My Friends"
-            android:textStyle="bold"
-            android:textSize="34sp" />
+            android:textSize="34sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/friendSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Friend username"
+            android:autofillHints=""
+            android:textSize="16sp"
+            android:minHeight="48dp"
+            android:layout_marginTop="125dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginEnd="150dp"
+            android:inputType="text" />
 
         <Button
             android:id="@+id/addFriendBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginTop="70dp"
+            android:textSize="16sp"
+            android:layout_marginTop="125dp"
             android:layout_marginEnd="28dp"
             android:text="Add" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="125dp"
-            android:layout_marginBottom="15dp"
             android:layout_marginHorizontal="24dp"
-            android:orientation="vertical"
-            android:background="@drawable/leaderboard_background">
+            android:layout_marginTop="175dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/leaderboard_background"
+            android:orientation="vertical">
+
             <TableLayout
                 android:id="@+id/friendsContainer"
                 android:layout_width="match_parent"

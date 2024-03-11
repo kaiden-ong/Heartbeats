@@ -33,7 +33,7 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
 
         heartbeatsApp = requireActivity().application as HeartbeatsApp
         databaseRepo = heartbeatsApp.databaseRepository
-        databaseRepo.getUserInfo { users, error ->
+        databaseRepo.getUserHeartbeats() { users, error ->
             if (error != null) {
                 Log.e(TAG, "Error retrieving challenges: ${error.message}")
             } else {
