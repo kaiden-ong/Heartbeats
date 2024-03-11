@@ -1,24 +1,42 @@
 package edu.uw.ischool.kong314.heartbeats
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
 
 class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
     private lateinit var map: GoogleMap
+    private lateinit var lastLocation: Location
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    companion object {
+        private const val LOCATION_REQUEST_CODE = 1
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val friendBtn = view.findViewById<ImageView>(R.id.imageView)
         val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         friendBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
@@ -36,13 +54,29 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        map.uiSettings.isZoomControlsEnabled = true
+        setUpMap()
+    }
 
-        // Add a marker to the map
-        val markerLocation = LatLng(37.7749, -122.4194) // San Francisco coordinates
-        val markerTitle = "San Francisco"
-        map.addMarker(MarkerOptions().position(markerLocation).title(markerTitle))
+    private fun setUpMap() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
+            return
+        }
+        map.isMyLocationEnabled = true
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                lastLocation = location
+                val currentLatLong = LatLng(location.latitude, location.longitude)
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 13f))
+            }
+        }
+    }
 
-        // Optionally, you can move the camera to the marker location
-        map.moveCamera(com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(markerLocation, 10f))
+    private fun getLocations(): Array<LatLng> {
+
     }
 }
