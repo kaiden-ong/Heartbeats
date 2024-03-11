@@ -16,9 +16,13 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 
 class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
@@ -28,6 +32,8 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
     private lateinit var heartbeatsApp: HeartbeatsApp
     private lateinit var databaseRepo: DatabaseRepository
+
+    private lateinit var auth: FirebaseAuth
 
     companion object {
         private const val LOCATION_REQUEST_CODE = 1
@@ -39,6 +45,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
         val friendBtn = view.findViewById<ImageView>(R.id.imageView)
         val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
 
+        auth = Firebase.auth
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         friendBtn.setOnClickListener {
@@ -72,7 +79,11 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
     private fun setMarkers(locations: Map<String, LatLng>) {
         for ((name, latLng) in locations) {
-            val markerOptions = MarkerOptions().position(latLng).title(name)
+            val markerOptions = if (name == auth.currentUser!!.displayName.toString()) {
+                MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).position(latLng).title("Your Post!")
+            } else {
+                MarkerOptions().position(latLng).title(name)
+            }
             map.addMarker(markerOptions)
         }
     }

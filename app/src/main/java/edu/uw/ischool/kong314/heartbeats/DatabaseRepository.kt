@@ -40,11 +40,12 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
         val locations = mutableMapOf<String, LatLng>()
         locationRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                for(item in snapshot.children) {
+                for (item in snapshot.children) {
+                    val name = item.key
                     val latitude = item.child("latitude").getValue(Double::class.java)
                     val longitude = item.child("longitude").getValue(Double::class.java)
-                    val name = item.child("name").getValue(String::class.java)
-                    if (latitude != null && longitude != null && name != null) {
+
+                    if (name != null && latitude != null && longitude != null) {
                         val latLng = LatLng(latitude, longitude)
                         locations[name] = latLng
                     }

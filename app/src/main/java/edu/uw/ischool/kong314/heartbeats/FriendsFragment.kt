@@ -9,7 +9,10 @@ import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 data class friendData(
     val imgURL: String,
@@ -20,12 +23,19 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
-//        bottomNavigationView.menu.setGroupCheckable(0, true, false)
-//        for (i in 0 until bottomNavigationView.menu.size()) {
-//            bottomNavigationView.menu.getItem(i).isChecked = false
-//        }
-//        bottomNavigationView.menu.setGroupCheckable(0, true, true)
+        val bottomNavigationView = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView.menu.setGroupCheckable(0, true, false)
+        for (i in 0 until bottomNavigationView.menu.size()) {
+            bottomNavigationView.menu.getItem(i).isChecked = false
+        }
+        bottomNavigationView.menu.setGroupCheckable(0, true, true)
+
+        val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
+
+        profileBtn.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, ProfileFragment()).commit()
+        }
 
         // to be replaced by database later
         val friendsList = listOf(
