@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TableRow
@@ -36,6 +37,12 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
         profileBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.container, ProfileFragment()).commit()
+        }
+
+        val addBtn = view.findViewById<Button>(R.id.addFriendBtn)
+        addBtn.setOnClickListener {
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, AddFriendFragment()).commit()
         }
 
         heartbeatsApp = requireActivity().application as HeartbeatsApp
