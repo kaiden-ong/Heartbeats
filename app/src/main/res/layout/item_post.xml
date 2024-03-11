@@ -12,18 +12,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="username"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"
+
+        app:layout_constraintBottom_toTopOf="@+id/rvImage"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/rvImage" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/rvImage"
         android:layout_width="0dp"
         android:layout_height="350dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@id/rvTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,11 +35,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/rvDesc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvImage" />
+
+    <TextView
+        android:id="@+id/rvDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Description"
         android:textSize="16sp"
         android:paddingBottom="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rvImage" />
+        app:layout_constraintTop_toBottomOf="@+id/rvTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

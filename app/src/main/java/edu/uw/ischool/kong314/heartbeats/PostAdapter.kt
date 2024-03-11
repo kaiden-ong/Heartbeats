@@ -12,8 +12,9 @@ import com.google.android.material.imageview.ShapeableImageView
 class PostAdapter (private var posts:ArrayList<Post>): RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
     inner class PostViewHolder(postView: View): RecyclerView.ViewHolder(postView) {
         val postImage: ImageView = itemView.findViewById(R.id.rvImage)
-        val postText: TextView = itemView.findViewById(R.id.rvTitle)
+        val postDesc: TextView = itemView.findViewById(R.id.rvDesc)
         val postUsername: TextView = itemView.findViewById(R.id.rvUser)
+        val postTitle: TextView = itemView.findViewById(R.id.rvTitle)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -26,7 +27,8 @@ class PostAdapter (private var posts:ArrayList<Post>): RecyclerView.Adapter<Post
         Glide.with(holder.itemView.context)
             .load(currentItem.image) // Assuming `imageUrl` is the URL of the image
             .into(holder.postImage)
-        holder.postText.text = currentItem.title
+        holder.postDesc.text = currentItem.desc
+        holder.postTitle.text = currentItem.title
         holder.postUsername.text = currentItem.username
     }
 
