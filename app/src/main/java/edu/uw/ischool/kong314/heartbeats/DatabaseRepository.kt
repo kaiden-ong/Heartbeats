@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.auth
 
 interface DatabaseRepository {
     fun getChallenges(callback: (List<String>?, DatabaseError?) -> Unit)
@@ -16,6 +17,7 @@ interface DatabaseRepository {
     fun getUserPrivacy(callback: (Map<String, Boolean>?, DatabaseError?) -> Unit)
 
     fun setUserPrivacy(user: String, privacyState: Boolean)
+    fun getFriends(callback: (List<String>?, DatabaseError?) -> Unit)
 }
 
 class DatabaseRepositoryStorage() : DatabaseRepository {
@@ -84,12 +86,13 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
         })
     }
 
+
     override fun getUserPrivacy(callback: (Map<String, Boolean>?, DatabaseError?) -> Unit) {
         val userRef = db.getReference("user_info")
         val users = mutableMapOf<String, Boolean>()
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                for(item in snapshot.children) {
+                for (item in snapshot.children) {
                     val uid = item.key
                     val privacy = item.child("privacy").getValue(Boolean::class.java)
                     if (uid != null && privacy != null) {
@@ -98,7 +101,23 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
                 }
                 callback(users, null)
             }
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, error)
+            }
+        })
+    }
 
+    override fun getFriends(callback: (List<String>?, DatabaseError?) -> Unit) {
+        val friendsRef = db.getReference("user_info").child(Firebase.auth.currentUser!!.uid).child("friends")
+        val friends = mutableListOf<String>()
+        friendsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children) {
+                    friends.add(item.getValue(String::class.java)!!)
+                }
+                friends.remove("dummy")
+                callback(friends, null)
+            }
             override fun onCancelled(error: DatabaseError) {
                 callback(null, error)
             }
