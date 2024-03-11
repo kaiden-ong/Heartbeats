@@ -13,6 +13,9 @@ interface DatabaseRepository {
     fun getChallenges(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getLocations(callback: (Map<String, LatLng>?, DatabaseError?) -> Unit)
     fun getUserInfo(callback: (Map<String, Int>?, DatabaseError?) -> Unit)
+    fun getUserPrivacy(callback: (Map<String, Boolean>?, DatabaseError?) -> Unit)
+
+    fun setUserPrivacy(user: String, privacyState: Boolean)
 }
 
 class DatabaseRepositoryStorage() : DatabaseRepository {
@@ -79,5 +82,31 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
                 callback(null, error)
             }
         })
+    }
+
+    override fun getUserPrivacy(callback: (Map<String, Boolean>?, DatabaseError?) -> Unit) {
+        val userRef = db.getReference("user_info")
+        val users = mutableMapOf<String, Boolean>()
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children) {
+                    val uid = item.key
+                    val privacy = item.child("privacy").getValue(Boolean::class.java)
+                    if (uid != null && privacy != null) {
+                        users[uid] = privacy
+                    }
+                }
+                callback(users, null)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, error)
+            }
+        })
+    }
+
+    override fun setUserPrivacy(user: String, privacyState: Boolean) {
+        val userRef = db.getReference("user_info/$user/privacy")
+        userRef.setValue(privacyState)
     }
 }

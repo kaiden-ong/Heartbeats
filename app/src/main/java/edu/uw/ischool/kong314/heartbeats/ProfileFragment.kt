@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.size
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -70,6 +71,12 @@ class ProfileFragment() : Fragment(R.layout.fragment_profile) {
             .addOnFailureListener { exception ->
                 Log.e("RetrieveHeartbeats", "Error getting heartbeats", exception)
             }
+
+        val privacyBtn = view.findViewById<Button>(R.id.privacyBtn)
+        privacyBtn.setOnClickListener {
+            val showPopUp = PopupFragment()
+            showPopUp.show((activity as AppCompatActivity).supportFragmentManager, "showPopUp")
+        }
 
         val signoutBtn = view.findViewById<Button>(R.id.signoutBtn)
         signoutBtn.setOnClickListener {
