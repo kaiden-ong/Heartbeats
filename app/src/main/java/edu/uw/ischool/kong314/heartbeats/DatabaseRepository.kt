@@ -151,31 +151,32 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
 
     override fun getPostUsers(callback: (List<String>?, DatabaseError?) -> Unit) {
         val postUsersRef = db.getReference("Posts")
-        val users = mutableListOf<String>()
-        lateinit var usersByUID: Map<String, String>
+        val usernames = mutableListOf<String>()
+        var usersByUID: Map<String, String> = emptyMap()
         this.getUsernamesByUID { users, error ->
             if (error != null) {
-                Log.e(TAG, "Error retrieving challenges: ${error.message}")
+                Log.e(TAG, "Error retrieving users for posts: ${error.message}")
             } else {
                 if (users != null) {
                     usersByUID = users
                 } else {
-                    Log.e(TAG, "No challenges found.")
+                    Log.e(TAG, "No users found.")
                 }
+                postUsersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for(item in snapshot.children) {
+                            val uid = item.child("by").getValue(String::class.java)!!
+                            usernames.add(usersByUID[uid]!!)
+                        }
+                        callback(usernames, null)
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        callback(null, error)
+                    }
+                })
             }
         }
-        postUsersRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for(item in snapshot.children) {
-                    val uid = item.child("by").getValue(String::class.java)!!
-                    users.add(usersByUID[uid]!!)
-                }
-                callback(users, null)
-            }
-            override fun onCancelled(error: DatabaseError) {
-                callback(null, error)
-            }
-        })
+
     }
 
     override fun getPostDesc(callback: (List<String>?, DatabaseError?) -> Unit) {
