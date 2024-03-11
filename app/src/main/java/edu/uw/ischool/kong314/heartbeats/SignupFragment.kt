@@ -52,26 +52,43 @@ class SignupFragment() : Fragment(R.layout.fragment_signup) {
             if (checkFields()) {
                 checkUsername(username) { usernameExists ->
                     if (!usernameExists) {
-                        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
-                            if(it.isSuccessful) {
-                                Toast.makeText(requireContext(), "Successfully created account!", Toast.LENGTH_SHORT).show()
-                                val user = auth.currentUser
-                                val friends = listOf<String>("dummy")
-                                database.child("user_info").child(user!!.uid).setValue(
-                                    mapOf(
-                                        "username" to username,
-                                        "heartbeats" to 0,
-                                        "friends" to friends
+                        auth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Successfully created account!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    val user = auth.currentUser
+                                    val friends = listOf<String>("dummy")
+                                    database.child("user_info").child(user!!.uid).setValue(
+                                        mapOf(
+                                            "username" to username,
+                                            "heartbeats" to 0,
+                                            "friends" to friends,
+                                            "privacy" to true
+                                            // true means friends only, false means everyone
+                                        )
                                     )
-                                )
-                                val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                                transaction.replace(R.id.container, ProfileFragment()).commit()
-                            } else {
-                                Toast.makeText(requireContext(), "Email already exists. Click Login!", Toast.LENGTH_SHORT).show()
+                                    val transaction =
+                                        requireActivity().supportFragmentManager.beginTransaction()
+                                    transaction.replace(R.id.container, ProfileFragment())
+                                        .commit()
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Email already exists. Click Login!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
-                        }
                     } else {
-                        Toast.makeText(requireContext(), "Username already exists.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Username already exists.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
@@ -93,7 +110,10 @@ class SignupFragment() : Fragment(R.layout.fragment_signup) {
     private fun checkFields(): Boolean {
         val email = binding.emailInput.text.toString()
         if (binding.nameInput.text.toString() == "") {
-            Toast.makeText(requireContext(), "Name is a required field", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Username is a required field", Toast.LENGTH_SHORT).show()
+            return false
+        } else if (binding.nameInput.text.length > 15) {
+            Toast.makeText(requireContext(), "Username must be less than 16 characters", Toast.LENGTH_SHORT).show()
             return false
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(requireContext(), "Invalid email format", Toast.LENGTH_SHORT).show()

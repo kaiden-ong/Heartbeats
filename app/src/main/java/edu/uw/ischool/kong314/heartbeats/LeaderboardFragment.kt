@@ -88,6 +88,12 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        val searchBar = view?.findViewById<EditText>(R.id.search_bar)
+        searchBar?.setText("")
+    }
+
     private fun setUITable(rankingList: List<rankingEntry>) {
         val container = view?.findViewById<LinearLayout>(R.id.leaderboard_container)
 
@@ -110,7 +116,7 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
         titleRow.addView(space2)
 
         val pointsTitleView = TextView(requireContext())
-        pointsTitleView.text = "POINTS"
+        pointsTitleView.text = "HEARTBEATS"
         titleRow.addView(pointsTitleView)
         if (container != null) {
             container.addView(titleRow)
@@ -139,9 +145,7 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
             pointsText.text = entry.points.toString()
             row.addView(pointsText)
 
-            if (container != null) {
-                container.addView(row)
-            }
+            container?.addView(row)
         }
     }
 }
