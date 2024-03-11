@@ -26,6 +26,9 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
     private lateinit var lastLocation: Location
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    private lateinit var heartbeatsApp: HeartbeatsApp
+    private lateinit var databaseRepo: DatabaseRepository
+
     companion object {
         private const val LOCATION_REQUEST_CODE = 1
     }
@@ -50,6 +53,28 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        heartbeatsApp = requireActivity().application as HeartbeatsApp
+        databaseRepo = heartbeatsApp.databaseRepository
+        databaseRepo.getLocations() { locations, error ->
+            if (error != null) {
+                println("Error retrieving locations: ${error.message}")
+            } else {
+                if (locations != null) {
+                    println("Retrieved locations: $locations")
+                    setMarkers(locations)
+                } else {
+                    println("No locations found.")
+                }
+            }
+        }
+    }
+
+    private fun setMarkers(locations: Map<String, LatLng>) {
+        for ((name, latLng) in locations) {
+            val markerOptions = MarkerOptions().position(latLng).title(name)
+            map.addMarker(markerOptions)
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -74,9 +99,5 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 13f))
             }
         }
-    }
-
-    private fun getLocations(): Array<LatLng> {
-
     }
 }
