@@ -36,25 +36,25 @@ class HomeFragment() : Fragment(R.layout.fragment_home)  {
                 Log.e(TAG, "Error retrieving post images: ${imgError.message}")
             } else {
                 if (imgs != null) {
-                    imageId = imgs
+                    imageId = imgs.reversed()
                     databaseRepo.getPostUsers() { users, userError ->
                         if (userError != null) {
                             Log.e(TAG, "Error retrieving posts users: ${userError.message}")
                         } else {
                             if (users != null) {
-                                username = users
+                                username = users.reversed()
                                 databaseRepo.getPostDesc() { descs, descError ->
                                     if (descError != null) {
                                         Log.e(TAG, "Error retrieving post descriptions: ${descError.message}")
                                     } else {
                                         if (descs != null) {
-                                            desc = descs
+                                            desc = descs.reversed()
                                             databaseRepo.getPostTitles() { titles, titlesError ->
                                                 if (titlesError != null) {
                                                     Log.e(TAG, "Error retrieving post titles: ${titlesError.message}")
                                                 } else {
                                                     if (titles != null) {
-                                                        title = titles
+                                                        title = titles.reversed()
                                                         getData()
                                                     } else {
                                                         Log.e(TAG, "No posts found.")
