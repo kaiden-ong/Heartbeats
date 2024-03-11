@@ -11,13 +11,26 @@ import android.util.Log
 
 
 
-
-
-
 class DailyFragment() : Fragment(R.layout.fragment_daily)  {
+    private lateinit var heartbeatsApp: HeartbeatsApp
+    private lateinit var databaseRepo: DatabaseRepository
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        heartbeatsApp = requireActivity().application as HeartbeatsApp
+        databaseRepo = heartbeatsApp.databaseRepository
+        databaseRepo.getChallenges { challenges, error ->
+            if (error != null) {
+                println("Error retrieving challenges: ${error.message}")
+            } else {
+                if (challenges != null) {
+                    println("Retrieved challenges: $challenges")
+                } else {
+                    println("No challenges found.")
+                }
+            }
+        }
 
         val friendBtn = view.findViewById<ImageView>(R.id.imageView)
         val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
