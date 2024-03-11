@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.LatLng
 interface DatabaseRepository {
     fun getChallenges(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getLocations(callback: (Map<String, LatLng>?, DatabaseError?) -> Unit)
+    fun getUserInfo(callback: (Map<String, Int>?, DatabaseError?) -> Unit)
 }
 
 class DatabaseRepositoryStorage() : DatabaseRepository {
@@ -50,6 +51,27 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
                     }
                 }
                 callback(locations, null)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, error)
+            }
+        })
+    }
+
+    override fun getUserInfo(callback: (Map<String, Int>?, DatabaseError?) -> Unit) {
+        val userRef = db.getReference("user_info")
+        val users = mutableMapOf<String, Int>()
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children) {
+                    val username = item.child("username").getValue(String::class.java)
+                    val heartbeats = item.child("heartbeats").getValue(Int::class.java)
+                    if (username != null && heartbeats != null) {
+                        users[username] = heartbeats
+                    }
+                }
+                callback(users, null)
             }
 
             override fun onCancelled(error: DatabaseError) {
