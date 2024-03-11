@@ -23,7 +23,6 @@ class HomeFragment() : Fragment(R.layout.fragment_home)  {
 
         (requireActivity() as MainActivity).setBottomNavigationBarVisibility(View.VISIBLE)
 
-
         // dummy data for now
         imageId = arrayOf(
             R.drawable.logo,

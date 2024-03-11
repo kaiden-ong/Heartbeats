@@ -1,24 +1,25 @@
 package edu.uw.ischool.kong314.heartbeats
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import java.time.LocalDate
 
-data class friendData(
+data class FriendData (
     val imgURL: String,
     val friendUser: String
 )
 class FriendsFragment : Fragment(R.layout.fragment_friends) {
+    private lateinit var heartbeatsApp: HeartbeatsApp
+    private lateinit var databaseRepo: DatabaseRepository
+    private lateinit var friendsNameList: List<String>
+    private val TAG: String = "FriendFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,41 +38,52 @@ class FriendsFragment : Fragment(R.layout.fragment_friends) {
             transaction.replace(R.id.container, ProfileFragment()).commit()
         }
 
-        // to be replaced by database later
-        val friendsList = listOf(
-            friendData("https://example.com/img1.jpg", "Friend 1"),
-            friendData("https://example.com/img2.jpg", "Friend 2"),
-            friendData("https://example.com/img3.jpg", "Friend 3"),
-            friendData("https://example.com/img4.jpg", "Friend 4"),
-            friendData("https://example.com/img5.jpg", "Friend 5"),
-            friendData("https://example.com/img6.jpg", "Friend 6"),
-            friendData("https://example.com/img7.jpg", "Friend 7"),
-            friendData("https://example.com/img8.jpg", "Friend 8"),
-            friendData("https://example.com/img9.jpg", "Friend 9"),
-            friendData("https://example.com/img10.jpg", "Friend 10"),
-            friendData("https://example.com/img10.jpg", "Friend 11"),
-            friendData("https://example.com/img10.jpg", "Friend 12"),
-            friendData("https://example.com/img10.jpg", "Friend 13"),
-            friendData("https://example.com/img10.jpg", "Friend 14")
-        )
+        heartbeatsApp = requireActivity().application as HeartbeatsApp
+        databaseRepo = heartbeatsApp.databaseRepository
+        databaseRepo.getFriends { friends, error ->
+            if (error != null) {
+                Log.e(TAG, "Error retrieving friends: ${error.message}")
+            } else {
+                if (friends != null) {
+                    friendsNameList = friends
+                    Log.d(TAG, friendsNameList.toString())
+                } else {
+                    Log.e(TAG, "No friends found.")
+                }
+                val friendsList = mutableListOf<FriendData>()
+                for (friend in friendsNameList) {
+                    friendsList.add(FriendData("https://example.com/img1.jpg", friend))
+                }
+                val container = view.findViewById<TableLayout>(R.id.friendsContainer)
 
-        val container = view.findViewById<TableLayout>(R.id.friendsContainer)
+                friendsList.forEach { entry ->
+                    val row = TableRow(requireContext())
 
-        friendsList.forEach { entry ->
-            val row = TableRow(requireContext())
+                    val padding = resources.getDimensionPixelSize(R.dimen.row_padding)
+                    row.setPadding(padding, padding, 0, padding)
 
-            val padding = resources.getDimensionPixelSize(R.dimen.row_padding)
-            row.setPadding(0, padding, 0, padding)
-            val friendImg = ImageView(requireContext())
-            friendImg.setImageResource(R.drawable.friends)
-            row.addView(friendImg)
-            val space1 = TextView(requireContext())
-            space1.text = "        "
-            row.addView(space1)
-            val username = TextView(requireContext())
-            username.text = entry.friendUser
-            row.addView(username)
-            container.addView(row)
+                    val friendImg = ImageView(requireContext())
+                    friendImg.setImageResource(R.drawable.profile)
+
+                    // Set layout parameters to increase the image size
+                    val imageSize = 100
+                    val params = TableRow.LayoutParams(imageSize, imageSize)
+                    friendImg.layoutParams = params
+
+                    row.addView(friendImg)
+
+                    val space1 = TextView(requireContext())
+                    space1.text = "        "
+                    row.addView(space1)
+
+                    val username = TextView(requireContext())
+                    username.text = entry.friendUser
+                    username.textSize = 20f
+                    row.addView(username)
+
+                    container.addView(row)
+                }
+            }
         }
     }
 }

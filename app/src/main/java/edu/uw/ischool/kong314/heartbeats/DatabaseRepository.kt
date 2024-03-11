@@ -8,11 +8,13 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.auth
 
 interface DatabaseRepository {
     fun getChallenges(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getLocations(callback: (Map<String, LatLng>?, DatabaseError?) -> Unit)
     fun getUserInfo(callback: (Map<String, Int>?, DatabaseError?) -> Unit)
+    fun getFriends(callback: (List<String>?, DatabaseError?) -> Unit)
 }
 
 class DatabaseRepositoryStorage() : DatabaseRepository {
@@ -75,6 +77,23 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
                 callback(users, null)
             }
 
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, error)
+            }
+        })
+    }
+
+    override fun getFriends(callback: (List<String>?, DatabaseError?) -> Unit) {
+        val friendsRef = db.getReference("user_info").child(Firebase.auth.currentUser!!.uid).child("friends")
+        val friends = mutableListOf<String>()
+        friendsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children) {
+                    friends.add(item.getValue(String::class.java)!!)
+                }
+                friends.remove("dummy")
+                callback(friends, null)
+            }
             override fun onCancelled(error: DatabaseError) {
                 callback(null, error)
             }
