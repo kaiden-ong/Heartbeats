@@ -124,7 +124,27 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
                             hashMap["title"] = title
                             hashMap["desc"] = desc
                             Firebase.auth.currentUser?.let { it1 -> hashMap.put("by", it1.uid) }
+
+                            var heartbeats = 0
+
+                            Firebase.auth.currentUser?.let { it1 ->
+                                database.child("user_info")
+                                    .child(it1.uid)
+                                    .child("heartbeats").get().addOnSuccessListener {
+                                        heartbeats = it.value.toString().toInt()
+                                    }.addOnFailureListener {
+                                        Log.e("firebase", "Error getting data: $it")
+                                    }
+                            }
+
+                            val newHashMap = HashMap<String, Any>()
+                            newHashMap.put("hearbeats", heartbeats)
+
                             database.child(postId!!).setValue(hashMap)
+                            Firebase.auth.currentUser?.let { it1 ->
+                                database.child(it1.uid)
+                                    .updateChildren(newHashMap)
+                            }
 
                             progressDialog.dismiss()
                         }
