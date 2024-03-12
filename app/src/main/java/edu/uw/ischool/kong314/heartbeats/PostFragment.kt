@@ -135,7 +135,7 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
                     OnSuccessListener<UploadTask.TaskSnapshot> { it ->
                         it.storage.downloadUrl.addOnSuccessListener {
                             val imageUrl = it.toString()
-                            val database = FirebaseDatabase.getInstance().getReference("Posts")
+                            val database = FirebaseDatabase.getInstance().getReference()
 
                             val postId = database.push().key
 
@@ -145,13 +145,15 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
                             hashMap["desc"] = desc
                             Firebase.auth.currentUser?.let { it1 -> hashMap.put("by", it1.uid) }
 
-                            database.child(postId!!).setValue(hashMap)
-
-                            var heartbeats = 0
+                            database.child("Posts").child(postId!!).setValue(hashMap)
 
                             database.child("user_info").child(Firebase.auth.currentUser!!.uid).child("heartbeats")
                                 .get().addOnSuccessListener {
-                                    Log.i("points", it.getValue(Int::class.java).toString())
+                                    val heartPoints = it.value.toString().toInt() + 1
+
+                                    val newHashMap = HashMap<String, Any>()
+                                    newHashMap["heartbeats"] = heartPoints
+                                    database.child("user_info").child(Firebase.auth.currentUser!!.uid).updateChildren(newHashMap)
                                 }
 
 //                            val newHashMap = HashMap<String, Any>()
