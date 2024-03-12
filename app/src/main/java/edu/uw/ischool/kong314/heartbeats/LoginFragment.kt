@@ -27,7 +27,7 @@ class LoginFragment() : Fragment(R.layout.fragment_login) {
         val signupBtn = view.findViewById<Button>(R.id.signupBtn)
         signupBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, SignupFragment()).commit()
+            transaction.replace(R.id.container, SignupFragment()).addToBackStack(null).commit()
         }
 
         val loginBtn = view.findViewById<Button>(R.id.loginBtn)
@@ -43,8 +43,11 @@ class LoginFragment() : Fragment(R.layout.fragment_login) {
                             "Successfully logged in!",
                             Toast.LENGTH_SHORT
                         ).show()
-                        val transaction =
-                            requireActivity().supportFragmentManager.beginTransaction()
+                        val fm = requireActivity().supportFragmentManager
+                        val transaction = fm.beginTransaction()
+                        for (i in 0 until fm.backStackEntryCount) {
+                            fm.popBackStack()
+                        }
                         transaction.replace(R.id.container, HomeFragment()).commit()
                     } else {
                         Toast.makeText(

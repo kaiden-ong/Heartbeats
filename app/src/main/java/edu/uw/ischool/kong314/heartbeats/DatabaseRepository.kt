@@ -22,7 +22,7 @@ interface DatabaseRepository {
     fun getPostImages(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getPostUsers(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getPostDesc(callback: (List<String>?, DatabaseError?) -> Unit)
-
+    fun getPostTitles(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getUsernamesByUID(callback: (Map<String, String>?, DatabaseError?) -> Unit)
     fun getPrivacybyUsername(username: String, callback: (Boolean?, DatabaseError?) -> Unit)
     fun getUsernameByUID(UID: String, callback: (String?, DatabaseError?) -> Unit)
@@ -190,6 +190,22 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
                     descs.add(item.child("desc").getValue(String::class.java)!!)
                 }
                 callback(descs, null)
+            }
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, error)
+            }
+        })
+    }
+
+    override fun getPostTitles(callback: (List<String>?, DatabaseError?) -> Unit) {
+        val postTitleRef = db.getReference("Posts")
+        val titles = mutableListOf<String>()
+        postTitleRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children) {
+                    titles.add(item.child("title").getValue(String::class.java)!!)
+                }
+                callback(titles, null)
             }
             override fun onCancelled(error: DatabaseError) {
                 callback(null, error)

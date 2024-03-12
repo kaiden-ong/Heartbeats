@@ -3,15 +3,12 @@ package edu.uw.ischool.kong314.heartbeats
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.size
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -31,7 +28,7 @@ class ProfileFragment() : Fragment(R.layout.fragment_profile) {
 
         friendBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, FriendsFragment()).commit()
+            transaction.replace(R.id.container, FriendsFragment()).addToBackStack(null).commit()
         }
 
         (requireActivity() as MainActivity).setBottomNavigationBarVisibility(View.VISIBLE)
@@ -81,7 +78,11 @@ class ProfileFragment() : Fragment(R.layout.fragment_profile) {
         val signoutBtn = view.findViewById<Button>(R.id.signoutBtn)
         signoutBtn.setOnClickListener {
             FirebaseAuth.getInstance().signOut();
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            val fm = requireActivity().supportFragmentManager
+            val transaction = fm.beginTransaction()
+            for (i in 0 until fm.backStackEntryCount) {
+                fm.popBackStack()
+            }
             transaction.replace(R.id.container, SigninFragment()).commit()
         }
 

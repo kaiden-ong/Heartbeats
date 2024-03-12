@@ -40,7 +40,8 @@ class SignupFragment() : Fragment(R.layout.fragment_signup) {
         val loginBtn = view.findViewById<Button>(R.id.loginBtn)
         loginBtn.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, LoginFragment()).commit()
+            transaction.replace(R.id.container, LoginFragment())
+                .addToBackStack(null).commit()
         }
 
         val signupBtn = view.findViewById<Button>(R.id.signupBtn)
@@ -71,10 +72,12 @@ class SignupFragment() : Fragment(R.layout.fragment_signup) {
                                             // true means friends only, false means everyone
                                         )
                                     )
-                                    val transaction =
-                                        requireActivity().supportFragmentManager.beginTransaction()
-                                    transaction.replace(R.id.container, ProfileFragment())
-                                        .commit()
+                                    val fm = requireActivity().supportFragmentManager
+                                    val transaction = fm.beginTransaction()
+                                    for (i in 0 until fm.backStackEntryCount) {
+                                        fm.popBackStack()
+                                    }
+                                    transaction.replace(R.id.container, ProfileFragment()).commit()
                                 } else {
                                     Toast.makeText(
                                         requireContext(),
