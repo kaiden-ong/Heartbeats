@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -114,7 +115,16 @@ class DailyFragment() : Fragment(R.layout.fragment_daily)  {
 
         postBtn.setOnClickListener {
             getCurrentLocation(title.getText().toString(), description.getText().toString())
+            Toast.makeText(activity, "Uploaded Daily Challenge to Map", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val title = view?.findViewById<EditText>(R.id.dailyTitle)
+        val description = view?.findViewById<EditText>(R.id.dailyDesc)
+        title?.setText("")
+        description?.setText("")
     }
 
     private fun getCurrentLocation(title: String, description: String) {

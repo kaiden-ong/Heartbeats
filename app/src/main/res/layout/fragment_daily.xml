@@ -146,6 +146,7 @@
         android:inputType="text"
         android:text=""
         android:hint="Description"
+        android:maxLength="100"
         app:layout_constraintBottom_toTopOf="@+id/dailyPostBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

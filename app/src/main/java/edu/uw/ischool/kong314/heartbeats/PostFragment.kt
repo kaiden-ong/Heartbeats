@@ -98,8 +98,6 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
 
         postImgBtn.setOnClickListener {
             uploadImageToFirebase(imageUri, title.text.toString(), description.text.toString())
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, HomeFragment()).addToBackStack(null).commit()
         }
     }
 

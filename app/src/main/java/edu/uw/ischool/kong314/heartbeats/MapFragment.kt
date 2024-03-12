@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -22,6 +23,11 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.getValue
 import com.google.firebase.ktx.Firebase
 
 
@@ -81,12 +87,28 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
 
     private fun setMarkers(locations: Map<String, LatLng>) {
         for ((name, latLng) in locations) {
-            val markerOptions = if (name == auth.currentUser!!.displayName.toString()) {
-                MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).position(latLng).title("Your Post!")
+            var marker: MarkerOptions? = null
+            if (name == auth.currentUser!!.uid) {
+                val database = FirebaseDatabase.getInstance().getReference()
+                var username = ""
+                database.addValueEventListener(object: ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        username = snapshot.child("user_info").child(auth.currentUser!!.uid).child("username").getValue().toString()
+
+                        val desc = snapshot.child("locations").child(auth.currentUser!!.uid).child("desc").getValue<String>()
+
+                        marker = MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).position(latLng).title(username).snippet(desc)
+                        map.addMarker(marker!!)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+
+                    }
+                })
             } else {
-                MarkerOptions().position(latLng).title(name)
+                marker = MarkerOptions().position(latLng).title(name)
+                map.addMarker(marker!!)
             }
-            map.addMarker(markerOptions)
         }
     }
 
