@@ -11,6 +11,8 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 
 class HomeFragment() : Fragment(R.layout.fragment_home)  {
@@ -101,10 +103,78 @@ class HomeFragment() : Fragment(R.layout.fragment_home)  {
     }
 
     private fun getData() {
-        for (i in title.indices) {
-            val post = Post(title[i], desc[i], imageId[i], "@"+username[i])
-            newArrayList.add(post)
+        val currUserUID = Firebase.auth.currentUser?.uid
+        var friendsList = emptyList<String>()
+        if(currUserUID != null) {
+            databaseRepo.getFriends { friends, error ->
+                if (error != null) {
+                    Log.e(TAG, "Error retrieving post friend details: ${error.message}")
+                } else {
+                    if (friends != null) {
+                        friendsList = friends
+
+                    } else {
+                        Log.e(TAG, "No friends found.")
+                    }
+                    for (i in title.indices) {
+                        if (friendsList.contains(username[i])) {
+                            val post = Post(title[i], desc[i], imageId[i], "@" + username[i])
+                            newArrayList.add(post)
+                        } else {
+                            databaseRepo.getPrivacybyUsername(username[i]) { privacyState, privacyError ->
+                                if (privacyError != null) {
+                                    Log.e(
+                                        TAG,
+                                        "Error retrieving post privacy: ${privacyError.message}"
+                                    )
+                                } else {
+                                    if (privacyState != null) {
+                                        if (!privacyState) {
+                                            val post = Post(
+                                                title[i],
+                                                desc[i],
+                                                imageId[i],
+                                                "@" + username[i]
+                                            )
+                                            newArrayList.add(post)
+                                        } else {
+                                            databaseRepo.getUsernameByUID(currUserUID) { currUsername, usernameError ->
+                                                if (usernameError != null) {
+                                                    Log.e(
+                                                        TAG,
+                                                        "Error retrieving current username: ${usernameError.message}"
+                                                    )
+                                                } else {
+                                                    if (currUsername != null && username[i] == currUsername) {
+                                                        val post = Post(
+                                                            title[i],
+                                                            desc[i],
+                                                            imageId[i],
+                                                            "@" + username[i]
+                                                        )
+                                                        newArrayList.add(post)
+                                                    } else {
+                                                        Log.e(TAG, "No username found.")
+                                                    }
+                                                    newRV.adapter = PostAdapter(newArrayList)
+                                                }
+
+                                            }
+                                        }
+                                    } else {
+                                        Log.e(TAG, "No posts found.")
+                                        newRV.adapter = PostAdapter(newArrayList)
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+            }
         }
-        newRV.adapter = PostAdapter(newArrayList)
+
     }
 }

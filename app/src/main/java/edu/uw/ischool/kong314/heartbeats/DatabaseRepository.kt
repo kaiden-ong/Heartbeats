@@ -24,6 +24,8 @@ interface DatabaseRepository {
     fun getPostDesc(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getPostTitles(callback: (List<String>?, DatabaseError?) -> Unit)
     fun getUsernamesByUID(callback: (Map<String, String>?, DatabaseError?) -> Unit)
+    fun getPrivacybyUsername(username: String, callback: (Boolean?, DatabaseError?) -> Unit)
+    fun getUsernameByUID(UID: String, callback: (String?, DatabaseError?) -> Unit)
 }
 
 class DatabaseRepositoryStorage() : DatabaseRepository {
@@ -225,6 +227,61 @@ class DatabaseRepositoryStorage() : DatabaseRepository {
                     }
                 }
                 callback(userUID, null)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(null, error)
+            }
+        })
+    }
+
+    override fun getPrivacybyUsername(username: String,
+        callback: (Boolean?, DatabaseError?) -> Unit
+    ) {
+        val userInfoRef = db.getReference("user_info")
+        var userUID = ""
+        var usersPrivacy: Map<String, Boolean> = emptyMap()
+        this.getUserPrivacy { users, error ->
+            if (error != null) {
+                Log.e(TAG, "Error retrieving users privacy: ${error.message}")
+            } else {
+                if (users != null) {
+                    usersPrivacy = users
+                } else {
+                    Log.e(TAG, "No users found.")
+                }
+                userInfoRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for(item in snapshot.children) {
+                            val currUsername = item.child("username").getValue(String::class.java)
+                            if (currUsername != null && currUsername == username) {
+                                userUID = item.key.toString()
+                            }
+                        }
+                        callback(usersPrivacy[userUID], null)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        callback(null, error)
+                    }
+                })
+            }
+        }
+
+    }
+
+    override fun getUsernameByUID(UID: String, callback: (String?, DatabaseError?) -> Unit) {
+        val userInfoRef = db.getReference("user_info")
+        var username = ""
+
+        userInfoRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for(item in snapshot.children) {
+                    if (item.key == UID) {
+                        username = item.child("username").getValue(String::class.java).toString()
+                    }
+                }
+                callback(username, null)
             }
 
             override fun onCancelled(error: DatabaseError) {
