@@ -99,7 +99,7 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
                         }
 
                         if (users.contains(name)) {
-                            username = snapshot.child("user_info").child(name).child("username").getValue().toString()
+                            username = "@"+snapshot.child("user_info").child(name).child("username").getValue().toString()
 
                             val desc = snapshot.child("locations").child(name).child("desc").getValue<String>()
 
