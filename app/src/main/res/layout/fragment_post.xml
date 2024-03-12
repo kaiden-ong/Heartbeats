@@ -52,37 +52,26 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.028" />
 
-    <ImageView
-        android:id="@+id/profile_pic"
-        android:layout_width="51dp"
-        android:layout_height="46dp"
-        app:layout_constraintBottom_toTopOf="@+id/description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.052"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.787"
-        tools:src="@tools:sample/avatars" />
-
     <EditText
         android:id="@+id/title"
-        android:layout_width="278dp"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="25dp"
         android:ems="10"
         android:hint="Title"
         android:inputType="text"
         android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.181"
-        app:layout_constraintStart_toEndOf="@+id/profile_pic"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.137" />
 
     <EditText
         android:id="@+id/description"
-        android:layout_width="360dp"
-        android:layout_height="51dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="25dp"
         android:ems="10"
         android:inputType="text"
         android:text=""
