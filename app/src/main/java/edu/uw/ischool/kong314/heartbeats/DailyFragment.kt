@@ -115,6 +115,17 @@ class DailyFragment() : Fragment(R.layout.fragment_daily)  {
 
         postBtn.setOnClickListener {
             getCurrentLocation(title.getText().toString(), description.getText().toString())
+            val database = FirebaseDatabase.getInstance().getReference()
+            database.child("user_info").child(Firebase.auth.currentUser!!.uid).child("heartbeats")
+                .get().addOnSuccessListener {
+                    val heartPoints = it.value.toString().toInt() + 5
+
+                    val newHashMap = java.util.HashMap<String, Any>()
+                    newHashMap["heartbeats"] = heartPoints
+                    database.child("user_info").child(Firebase.auth.currentUser!!.uid).updateChildren(newHashMap)
+                }
+            title.setText("")
+            description.setText("")
             Toast.makeText(activity, "Uploaded Daily Challenge to Map", Toast.LENGTH_SHORT).show()
         }
     }
