@@ -45,7 +45,7 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
                 }
                 val sortedUsers = userList.entries.sortedByDescending {it.value}.map { it.key}
                 sortedUsers.forEachIndexed { index, user ->
-                    rankingList.add(rankingEntry(index + 1, user, userList.get(user)!!))
+                    rankingList.add(rankingEntry(index + 1, user, userList[user]!!))
                 }
                 setUITable(rankingList)
             }
@@ -157,9 +157,6 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
             row.addView(pointsText)
 
             container?.addView(row)
-
-
-
 
             val rowSpaceView = View(requireContext())
             val rowSpaceParams = LinearLayout.LayoutParams(
