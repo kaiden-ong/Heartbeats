@@ -65,9 +65,10 @@ class LeaderboardFragment() : Fragment(R.layout.fragment_leaderboard)  {
                 }
 
                 val newRankingList = mutableListOf<rankingEntry>()
-                val newRankings = filteredUsers.entries.sortedByDescending { it.value }.map {it.key}
-                newRankings.forEachIndexed { index, user ->
-                    newRankingList.add(rankingEntry(index + 1, user, filteredUsers.get(user)!!))
+                rankingList.forEach { originalEntry ->
+                    filteredUsers[originalEntry.username]?.let { rank ->
+                        newRankingList.add(rankingEntry(originalEntry.rank, originalEntry.username, rank))
+                    }
                 }
                 setUITable(newRankingList)
             }
