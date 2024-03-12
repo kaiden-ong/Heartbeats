@@ -22,6 +22,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.lifecycle.AndroidViewModel
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -33,6 +34,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.HashMap
@@ -47,6 +49,7 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
         val profileBtn = view.findViewById<ImageView>(R.id.imageView2)
 
         val selectImgBtn = view.findViewById<Button>(R.id.select_image)
+        val cameraBtn = view.findViewById<Button>(R.id.capture_image)
         val imageView = view.findViewById<ImageView>(R.id.post_image)
 
         friendBtn.setOnClickListener {
@@ -67,6 +70,11 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
         val selectImageIntent = registerForActivityResult(ActivityResultContracts.GetContent()) {uri ->
             imageUri = uri
             imageView.setImageURI(uri)
+        }
+
+        val contract = registerForActivityResult(ActivityResultContracts.TakePicture()) { uri ->
+            imageView.setImageURI(null)
+            imageView.setImageURI(imageUri)
         }
 
         val textChange: TextWatcher = object : TextWatcher {
@@ -92,6 +100,11 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
 
         selectImgBtn.setOnClickListener {
             selectImageIntent.launch("image/*")
+        }
+
+        imageUri = createImageUri()
+        cameraBtn.setOnClickListener {
+            contract.launch(imageUri)
         }
 
 
@@ -122,7 +135,7 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
                     OnSuccessListener<UploadTask.TaskSnapshot> { it ->
                         it.storage.downloadUrl.addOnSuccessListener {
                             val imageUrl = it.toString()
-                            val database = FirebaseDatabase.getInstance().getReference("Posts")
+                            val database = FirebaseDatabase.getInstance().getReference()
 
                             val postId = database.push().key
 
@@ -132,13 +145,15 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
                             hashMap["desc"] = desc
                             Firebase.auth.currentUser?.let { it1 -> hashMap.put("by", it1.uid) }
 
-                            database.child(postId!!).setValue(hashMap)
-
-                            var heartbeats = 0
+                            database.child("Posts").child(postId!!).setValue(hashMap)
 
                             database.child("user_info").child(Firebase.auth.currentUser!!.uid).child("heartbeats")
                                 .get().addOnSuccessListener {
-                                    Log.i("points", it.getValue(Int::class.java).toString())
+                                    val heartPoints = it.value.toString().toInt() + 1
+
+                                    val newHashMap = HashMap<String, Any>()
+                                    newHashMap["heartbeats"] = heartPoints
+                                    database.child("user_info").child(Firebase.auth.currentUser!!.uid).updateChildren(newHashMap)
                                 }
 
 //                            val newHashMap = HashMap<String, Any>()
@@ -163,6 +178,13 @@ class PostFragment() : Fragment(R.layout.fragment_post) {
         } else {
             Toast.makeText(activity,"Please select an image", Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun createImageUri(): Uri {
+        val image = File(activity?.filesDir, "camera_photos.png")
+        return FileProvider.getUriForFile(requireContext(),
+            "edu.uw.ischool.kong314.heartbeats.FileProvider",
+            image)
     }
 
 }

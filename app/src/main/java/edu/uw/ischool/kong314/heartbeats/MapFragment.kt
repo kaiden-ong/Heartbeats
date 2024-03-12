@@ -86,29 +86,43 @@ class MapFragment : Fragment(R.layout.fragment_map), OnMapReadyCallback {
     }
 
     private fun setMarkers(locations: Map<String, LatLng>) {
+        val database = FirebaseDatabase.getInstance().getReference()
         for ((name, latLng) in locations) {
             var marker: MarkerOptions? = null
-            if (name == auth.currentUser!!.uid) {
-                val database = FirebaseDatabase.getInstance().getReference()
                 var username = ""
                 database.addValueEventListener(object: ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        username = snapshot.child("user_info").child(auth.currentUser!!.uid).child("username").getValue().toString()
+                        val user_info = snapshot.child("user_info").children
+                        val users = ArrayList<String>()
+                        for (childSnapshot in user_info) {
+                            users.add(childSnapshot.key!!)
+                        }
 
-                        val desc = snapshot.child("locations").child(auth.currentUser!!.uid).child("desc").getValue<String>()
+                        if (users.contains(name)) {
+                            username = snapshot.child("user_info").child(name).child("username").getValue().toString()
 
-                        marker = MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).position(latLng).title(username).snippet(desc)
-                        map.addMarker(marker!!)
+                            val desc = snapshot.child("locations").child(name).child("desc").getValue<String>()
+
+                            if (auth.currentUser!!.uid == name) {
+                                marker = MarkerOptions().icon(
+                                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                                ).position(latLng).title(username).snippet(desc)
+                            } else {
+                                marker = MarkerOptions().icon(
+                                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)
+                                ).position(latLng).title(username).snippet(desc)
+                            }
+                            map.addMarker(marker!!)
+                        }else {
+                            marker = MarkerOptions().position(latLng).title(name)
+                            map.addMarker(marker!!)
+                        }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
 
                     }
                 })
-            } else {
-                marker = MarkerOptions().position(latLng).title(name)
-                map.addMarker(marker!!)
-            }
         }
     }
 
